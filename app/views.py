@@ -3,4 +3,4 @@ from flask import render_template
 
 @app.route('/')
 def hello():
-  return render_template('home.htm')
+  return render_template('home.htm', data={'name': 'Rupak'})
