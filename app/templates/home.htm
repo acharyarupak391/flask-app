@@ -8,6 +8,11 @@
   <script src={{ url_for('static', filename='js/home.js') }}></script>
 </head>
 <body>
-  <h1>Hello Everyone from {{ data.name }}</h1>
+  <h1>Hello Everyone from {{ data.name }}</h1><br>
+  <form enctype="multipart/form-data">
+    <label for="">Select an image</label><br>
+    <input type="file" name="my-form" id="">
+    <button id="upload-btn">Upload</button>
+  </form>
 </body>
 </html>

@@ -2,6 +2,7 @@ from app import app
 from flask import render_template
 from flask import request
 from app.modules import DB
+import json
 
 db = DB()
 
@@ -15,8 +16,19 @@ def error_handler(e):
 
 @app.route('/')
 def hello():
-  # data = {}
-  # db.add_document('users', data)
   client_ip = request.remote_addr;
-  db.add_ip('users', client_ip)
-  return render_template('home.htm', data={'name': 'Rupak'})
+  # db.add_ip('users', client_ip)
+  return render_template('home.htm', data={'name': 'Flask-app'})
+
+@app.route('/upload', methods=["POST"])
+def file_handle():
+  if(request.files and request.form):
+    image = request.files['image-file']
+    user_name = request.form['user-name']
+    # image.seek(0, 2)
+    # size = image.tell()
+    # if(size/1024/1024 > 5): return json.dumps({'error': 'File too large (Max File Size is 5 MB)'})
+    if(image.content_type.split('/')[0] != 'image'): return json.dumps({'error': 'Only image files accepted'})
+    db.upload_file_to_bucket('elasticbeanstalk-us-east-1-231954546651', image, user_name)
+
+  return json.dumps({'msg': 'Image received successfully!'})
