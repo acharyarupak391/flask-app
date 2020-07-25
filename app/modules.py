@@ -20,18 +20,16 @@ class DB():
     else:
       # coll.find_one({'ip': ip})
       coll.update_one({'ip': ip}, {"$inc": {"count": 1}})
-    
-  def createBucket(self, name):
-    d = datetime.now()
-    name = name \
-            #  + '-' + str(d.year) + str(d.month) + str(d.day)\
-            #  + str(d.hour) + str(d.minute) + str(d.second) + str(d.microsecond)
-    self.s3_client.create_bucket(Bucket=name)
 
   def upload_file_to_bucket(self, bucket_name, file, file_name):
     # file_id = self.add_single_document('user-images', {'user': file_name})
-    file_id = "5f197c4d6ae7cdc6c2a89e1a"
-
-    self.s3_client.put_object(ACL='private', Body=file, Bucket=bucket_name, 
-                              Key=file_name+'.jpg', Metadata={'_id': str(file_id)},
+    file_id = 1231434
+    if(self.s3_client.head_bucket(Bucket=bucket_name)['ResponseMetadata']['HTTPStatusCode'] != 200):
+      self.s3_client.create_bucket(Bucket=bucket_name)
+    self.s3_client.put_object(ACL='public-read', Body=file, Bucket=bucket_name, 
+                              Key=file_name+'.jpg', 
+                              Metadata={'_id': str(file_id)},
                               ContentType=file.content_type)
+
+  def get_file_object(self, bucket_name, file_key):
+    return self.s3_client.get_object(Bucket=bucket_name, Key=file_key)['Body']

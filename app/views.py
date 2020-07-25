@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template
 from flask import request
+from flask import Response
 from app.modules import DB
 import json
 
@@ -25,10 +26,14 @@ def file_handle():
   if(request.files and request.form):
     image = request.files['image-file']
     user_name = request.form['user-name']
-    # image.seek(0, 2)
-    # size = image.tell()
-    # if(size/1024/1024 > 5): return json.dumps({'error': 'File too large (Max File Size is 5 MB)'})
+    image.seek(0, 2)
+    size = image.tell()
+    image.seek(0)
+    if(size/1024/1024 > 5): return json.dumps({'error': 'File too large (Max File Size is 5 MB)'})
     if(image.content_type.split('/')[0] != 'image'): return json.dumps({'error': 'Only image files accepted'})
-    db.upload_file_to_bucket('elasticbeanstalk-us-east-1-231954546651', image, user_name)
+    db.upload_file_to_bucket('mynewbucket391', image, user_name)
+    # body = db.get_file_object(bucket_name='mynewbucket391', file_key=(user_name+'.jpg'))
+
 
   return json.dumps({'msg': 'Image received successfully!'})
+  # return Response(response=body, content_type=image.content_type)

@@ -2,4 +2,5 @@
 .vscode/
 .git/
 **/__pycache__
+.ebextensions
 **/secrets.py
